@@ -6,12 +6,14 @@ import EventForm from "../../features/events/eventForm/EventForm";
 import HomePage from "../../features/home/HomPage";
 import NavBar from "../../features/nav/NavBar";
 import Sandbox from "../../features/sandbox/Sandbox";
+import ModalManager from "../common/modals/ModalManager";
 import "./styles.css";
 
 function App() {
   const { key } = useLocation();
   return (
     <>
+      <ModalManager />
       <Routes>
         <Route exact path="/" Component={HomePage} />
         <Route exact path="/sandbox" element={<Sandbox />} />
