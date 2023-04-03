@@ -8,7 +8,10 @@ import { decrement, increment } from "./testReducer";
 
 export default function Sandbox() {
   const dispatch = useDispatch();
+  const [target, setTarget] = useState(null);
   const data = useSelector((state) => state.test.data);
+  const { loading } = useSelector((state) => state.async);
+
   const defaultProps = {
     center: {
       lat: 10.99835602,
@@ -27,12 +30,22 @@ export default function Sandbox() {
       <h1>testing 123</h1>
       <h3>the Data is: {data}</h3>
       <Button
-        onClick={() => dispatch(increment(10))}
+        name="increment"
+        loading={loading && target === "increment"}
+        onClick={(E) => {
+          dispatch(increment(10));
+          setTarget(E.target.name);
+        }}
         content="Increment"
         color="green"
       />
       <Button
-        onClick={() => dispatch(decrement(5))}
+        name="decrement"
+        loading={loading && target === "decrement"}
+        onClick={(E) => {
+          dispatch(decrement(10));
+          setTarget(E.target.name);
+        }}
         content="Decrement"
         color="red"
       />

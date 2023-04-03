@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import EventDashboard from "../../features/events/eventDashboard/EventDashboard";
 import EventDetailedPage from "../../features/events/eventDetailed/EventDetailedPage";
 import EventForm from "../../features/events/eventForm/EventForm";
@@ -14,6 +15,7 @@ function App() {
   return (
     <>
       <ModalManager />
+      <ToastContainer position="bottom-right" theme="colored" hideProgressBar />
       <Routes>
         <Route exact path="/" Component={HomePage} />
         <Route exact path="/sandbox" element={<Sandbox />} />
