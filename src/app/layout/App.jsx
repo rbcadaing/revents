@@ -7,6 +7,7 @@ import EventForm from "../../features/events/eventForm/EventForm";
 import HomePage from "../../features/home/HomPage";
 import NavBar from "../../features/nav/NavBar";
 import Sandbox from "../../features/sandbox/Sandbox";
+import ErrorComponent from "../common/errors/ErrorComponent";
 import ModalManager from "../common/modals/ModalManager";
 import "./styles.css";
 
@@ -19,9 +20,9 @@ function App() {
       <Routes>
         <Route exact path="/" Component={HomePage} />
         <Route exact path="/sandbox" element={<Sandbox />} />
+        <Route path="/error" Component={ErrorComponent} />
         <Route path="/events" element={<NavBar />}>
           <Route index element={<EventDashboard />} />
-
           <Route path=":id" element={<EventDetailedPage />} />
           {["createEvent", "manage/:id"].map((path) => (
             <Route path={path} Component={EventForm} key={key} />

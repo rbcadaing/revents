@@ -34,7 +34,7 @@ export default function EventDetailedHeader({ event }) {
                   content={event.title}
                   style={{ color: "white" }}
                 />
-                <p>{format(event.date, "MMM d, yyyy h:mm a")}</p>
+                <p>{format(new Date(event.date), "MMM d, yyyy h:mm a")}</p>
                 <p>
                   Hosted by <strong>{event.hostedBy}</strong>
                 </p>

@@ -2,7 +2,7 @@ export const sampleData = [
   {
     id: "1",
     title: "Trip to Empire State building",
-    date: new Date("2018-03-21"),
+    date: new Date("2018-03-21").toDateString(),
     category: "culture",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
@@ -16,7 +16,7 @@ export const sampleData = [
     venue: {
       address: "Empire State Building, 5th Avenue, New York, NY, USA",
       latLng: {
-        lat: 40.7484405,
+        llatLngat: 40.7484405,
         lng: -73.98566440000002,
       },
     },
@@ -38,7 +38,7 @@ export const sampleData = [
   {
     id: "2",
     title: "Trip to Punch and Judy Pub",
-    date: new Date("2018-03-18"),
+    date: new Date("2018-03-18").toDateString(),
     category: "drinks",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
