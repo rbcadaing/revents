@@ -10,8 +10,10 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./app/store/configureStore";
 import ScrollToTop from "./app/layout/ScrollToTop";
+import { verifyAuth } from "./features/auth/authAction";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+store.dispatch(verifyAuth());
 
 root.render(
   <Provider store={store}>

@@ -30,6 +30,7 @@ export default function EventDetailedPage() {
   // console.log(!!event);
   // console.log(error);
   //TODO Address Error handling
+  // For page Refresh
   // console.log(`error-${error?.message}`);
   // console.log(`Loading-${loading}`);
   // console.log(`event-${event.title}`);
