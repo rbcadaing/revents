@@ -15,6 +15,7 @@ export default function useFirestoreDoc({
   shouldExecute = true,
 }) {
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!shouldExecute) return;
     dispatch(asynActionStart());

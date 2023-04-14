@@ -13,6 +13,7 @@ import ModalManager from "../common/modals/ModalManager";
 import "./styles.css";
 import { useSelector } from "react-redux";
 import LoadingComponent from "./LoadingComponent";
+import ProfilePage from "../../features/profiles/profilePage/ProfilePage";
 
 function App() {
   const { key } = useLocation();
@@ -26,13 +27,16 @@ function App() {
         <Route exact path="/" Component={HomePage} />
         <Route exact path="/sandbox" element={<Sandbox />} />
         <Route path="/error" Component={ErrorComponent} />
-        <Route path="/account" Component={AccountPage} />
         <Route path="/events" element={<NavBar />}>
           <Route index element={<EventDashboard />} />
           <Route path=":id" element={<EventDetailedPage />} />
           {["createEvent", "manage/:id"].map((path) => (
             <Route path={path} Component={EventForm} key={key} />
           ))}
+        </Route>
+        <Route path="/users" element={<NavBar />}>
+          <Route path="account" element={<AccountPage />} />
+          <Route path="profile/:id" Component={ProfilePage} />
         </Route>
       </Routes>
     </>
