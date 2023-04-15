@@ -31,11 +31,11 @@ export default function ProfilePage() {
         <Grid.Column width={16}>
           <ProfileHeader
             profile={selectedUserProfile}
-            isCurrentUSer={currentUser.uid === selectedUserProfile.id}
+            isCurrentUser={currentUser.uid === selectedUserProfile.id}
           />
           <ProfileContent
             profile={selectedUserProfile}
-            isCurrentUSer={currentUser.uid === selectedUserProfile.id}
+            isCurrentUser={currentUser.uid === selectedUserProfile.id}
           />
         </Grid.Column>
       </Grid>
