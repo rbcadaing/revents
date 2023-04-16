@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Segment, Image, Item, Header } from "semantic-ui-react";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
+import {
+  addUserAttendance,
+  cancelUserAttendance,
+} from "../../../app/firestore/firestoreService";
 
 const eventImageStyle = {
   filter: "brightness(30%)",
@@ -16,12 +21,36 @@ const eventImageTextStyle = {
   color: "white",
 };
 
-export default function EventDetailedHeader({ event }) {
+export default function EventDetailedHeader({ event, isHost, isGoing }) {
+  const [loading, setLoading] = useState(false);
+
+  async function handleUserJoinEvent() {
+    setLoading(true);
+    try {
+      await addUserAttendance(event);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleUserLeaveEvent() {
+    setLoading(true);
+    try {
+      await cancelUserAttendance(event);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <Segment>
       <Segment basic attached="top" style={{ padding: "0" }}>
         <Image
-          src={`/assets/categoryImages/${event.category}.jpg`}
+          src={`/assets/categoryImages/${event?.category}.jpg`}
           fluid
           style={eventImageStyle}
         />
@@ -31,12 +60,17 @@ export default function EventDetailedHeader({ event }) {
               <Item.Content>
                 <Header
                   size="huge"
-                  content={event.title}
+                  content={event?.title}
                   style={{ color: "white" }}
                 />
-                <p>{format(new Date(event.date), "MMM d, yyyy h:mm a")}</p>
+                <p>{format(new Date(event?.date), "MMM d, yyyy h:mm a")}</p>
                 <p>
-                  Hosted by <strong>{event.hostedBy}</strong>
+                  Hosted by{" "}
+                  <strong>
+                    <Link to={`/users/profile/${event.hostUid}`}>
+                      {event?.hostedBy}
+                    </Link>
+                  </strong>
                 </p>
               </Item.Content>
             </Item>
@@ -44,18 +78,35 @@ export default function EventDetailedHeader({ event }) {
         </Segment>
       </Segment>
 
-      <Segment attached="bottom">
-        <Button>Cancel My Event</Button>
-        <Button color="teal">JOIN THIS EVENT</Button>
+      <Segment attached="bottom" clearing>
+        {!isHost && (
+          <>
+            {isGoing ? (
+              <Button onClick={handleUserLeaveEvent} loading={loading}>
+                Cancel My Place
+              </Button>
+            ) : (
+              <Button
+                loading={loading}
+                onClick={handleUserJoinEvent}
+                color="teal"
+              >
+                JOIN THIS EVENT
+              </Button>
+            )}
+          </>
+        )}
 
-        <Button
-          as={Link}
-          to={`/events/manage/${event.id}`}
-          color="orange"
-          floated="right"
-        >
-          Manage Event
-        </Button>
+        {isHost && (
+          <Button
+            as={Link}
+            to={`/events/manage/${event.id}`}
+            color="orange"
+            floated="right"
+          >
+            Manage Event
+          </Button>
+        )}
       </Segment>
     </Segment>
   );

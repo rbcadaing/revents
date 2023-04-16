@@ -16,7 +16,6 @@ export default function TestPlaceInput({ setLocation }) {
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
         setLocation(latLng);
-        console.log("Success", latLng);
       })
       .catch((error) => console.error("Error", error));
 
