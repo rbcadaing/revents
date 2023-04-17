@@ -1,4 +1,3 @@
-import { type } from "@testing-library/user-event/dist/type";
 import {
   LISTEN_TO_CURRENT_USER_PROFILE,
   LISTEN_TO_SELECTED_USER_PROFILE,
