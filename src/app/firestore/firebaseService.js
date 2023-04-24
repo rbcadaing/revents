@@ -1,11 +1,11 @@
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import firebase from "../config/firebase";
-import { setUserProfileData } from "./firestoreService";
+import {setUserProfileData} from "./firestoreService";
 
 export function firebaseObjectToArray(snapshot) {
   if (snapshot) {
     return Object.entries(snapshot).map((e) =>
-      Object.assign({}, e[1], { id: e[0] })
+      Object.assign({}, e[1], {id: e[0]})
     );
   }
 }
@@ -90,4 +90,12 @@ export function addEventChatComment(eventId, values) {
 
 export function getEventChatRef(eventId) {
   return firebase.database().ref(`chat/${eventId}`).orderByKey();
+}
+export function getUserFeedRef() {
+  const user = firebase.auth().currentUser;
+  return firebase
+    .database()
+    .ref(`posts/${user.uid}`)
+    .orderByKey()
+    .limitToLast(5);
 }
