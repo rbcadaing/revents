@@ -9,8 +9,6 @@ const db = admin.firestore();
 exports.addFollowing = functions.firestore
   .document("following/{userUid}/userFollowing/{profileId}")
   .onCreate(async (snapshot, context) => {
-    const following = snapshot.data();
-    console.log({following});
     try {
       const userDoc = await db
         .collection("users")

@@ -15,7 +15,6 @@ export function asynActionFinish() {
 }
 
 export function asynActionError(error) {
-  console.log(error);
   return {
     type: ASYNC_ACTION_ERROR,
     payload: error,
@@ -28,7 +27,7 @@ const initialState = {
   initialized: false,
 };
 
-export default function asyncReducer(state = initialState, { type, payload }) {
+export default function asyncReducer(state = initialState, {type, payload}) {
   switch (type) {
     case ASYNC_ACTION_START:
       return {

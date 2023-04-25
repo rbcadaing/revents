@@ -14,7 +14,6 @@ export default function EventsFeed() {
 
   useEffect(() => {
     getUserFeedRef().on("value", (snapshot) => {
-      console.log(snapshot);
       if (!snapshot.exists()) {
         return;
       }

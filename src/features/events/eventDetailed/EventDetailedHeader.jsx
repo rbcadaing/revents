@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Segment, Image, Item, Header } from "semantic-ui-react";
-import { format } from "date-fns";
-import { toast } from "react-toastify";
+import React, {useState} from "react";
+import {Link} from "react-router-dom";
+import {Button, Segment, Image, Item, Header} from "semantic-ui-react";
+import {format} from "date-fns";
+import {toast} from "react-toastify";
 import {
   addUserAttendance,
   cancelUserAttendance,
@@ -21,7 +21,7 @@ const eventImageTextStyle = {
   color: "white",
 };
 
-export default function EventDetailedHeader({ event, isHost, isGoing }) {
+export default function EventDetailedHeader({event, isHost, isGoing}) {
   const [loading, setLoading] = useState(false);
 
   async function handleUserJoinEvent() {
@@ -48,7 +48,7 @@ export default function EventDetailedHeader({ event, isHost, isGoing }) {
 
   return (
     <Segment>
-      <Segment basic attached="top" style={{ padding: "0" }}>
+      <Segment basic attached="top" style={{padding: "0"}}>
         <Image
           src={`/assets/categoryImages/${event?.category}.jpg`}
           fluid
@@ -61,13 +61,14 @@ export default function EventDetailedHeader({ event, isHost, isGoing }) {
                 <Header
                   size="huge"
                   content={event?.title}
-                  style={{ color: "white" }}
+                  style={{color: "white"}}
                 />
-                <p>{format(new Date(event?.date), "MMM d, yyyy h:mm a")}</p>
+                {/* TODO to fix */}
+                {/* <p>{format(new Date(event?.date), "MMM d, yyyy h:mm a")}</p> */}
                 <p>
                   Hosted by{" "}
                   <strong>
-                    <Link to={`/users/profile/${event.hostUid}`}>
+                    <Link to={`/users/profile/${event?.hostUid}`}>
                       {event?.hostedBy}
                     </Link>
                   </strong>
@@ -100,7 +101,7 @@ export default function EventDetailedHeader({ event, isHost, isGoing }) {
         {isHost && (
           <Button
             as={Link}
-            to={`/events/manage/${event.id}`}
+            to={`/events/manage/${event?.id}`}
             color="orange"
             floated="right"
           >

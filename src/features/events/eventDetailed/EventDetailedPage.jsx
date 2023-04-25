@@ -1,33 +1,32 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Container, Grid } from "semantic-ui-react";
-import { listenToEventFromFirestore } from "../../../app/firestore/firestoreService";
+import {useDispatch, useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
+import {Container, Grid} from "semantic-ui-react";
+import {listenToEventFromFirestore} from "../../../app/firestore/firestoreService";
 import useFirestoreDoc from "../../../app/hooks/useFirestoreDoc";
-import { listenToEvents } from "../eventActions";
+
 import EventDetailedChat from "./EventDetailedChat";
 import EventDetailedHeader from "./EventDetailedHeader";
 import EventDetailedInfo from "./EventDetailedInfo";
 import EventDetailedSidebar from "./EventDetailedSidebar";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
+import {listenToSelectedEvent} from "../eventActions";
 
 export default function EventDetailedPage() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.auth);
+  const {currentUser} = useSelector((state) => state.auth);
 
-  let { id } = useParams();
+  let {id} = useParams();
 
-  const event = useSelector((state) =>
-    state.event.events.find((e) => e.id === id)
-  );
+  const event = useSelector((state) => state.event.selectedEvent);
 
-  const { loading, error } = useSelector((state) => state.async);
+  const {loading, error} = useSelector((state) => state.async);
   const isHost = event?.hostUid === currentUser?.uid;
   const isGoing = event?.attendees?.some((a) => a.id === currentUser?.uid);
 
   useFirestoreDoc({
     query: () => listenToEventFromFirestore(id),
-    data: (event) => dispatch(listenToEvents([event])),
+    data: (event) => dispatch(listenToSelectedEvent(event)),
     deps: [id, dispatch],
   });
 
