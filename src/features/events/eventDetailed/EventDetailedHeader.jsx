@@ -7,6 +7,8 @@ import {
   addUserAttendance,
   cancelUserAttendance,
 } from "../../../app/firestore/firestoreService";
+import {useSelector} from "react-redux";
+import UnauthModal from "../../auth/UnauthModal";
 
 const eventImageStyle = {
   filter: "brightness(30%)",
@@ -23,6 +25,8 @@ const eventImageTextStyle = {
 
 export default function EventDetailedHeader({event, isHost, isGoing}) {
   const [loading, setLoading] = useState(false);
+  const {authenticated} = useSelector((state) => state.auth);
+  const [modalOpen, setModalOpen] = useState(false);
 
   async function handleUserJoinEvent() {
     setLoading(true);
@@ -47,68 +51,75 @@ export default function EventDetailedHeader({event, isHost, isGoing}) {
   }
 
   return (
-    <Segment>
-      <Segment basic attached="top" style={{padding: "0"}}>
-        <Image
-          src={`/assets/categoryImages/${event?.category}.jpg`}
-          fluid
-          style={eventImageStyle}
-        />
-        <Segment basic style={eventImageTextStyle}>
-          <Item.Group>
-            <Item>
-              <Item.Content>
-                <Header
-                  size="huge"
-                  content={event?.title}
-                  style={{color: "white"}}
-                />
-                {/* TODO to fix */}
-                {/* <p>{format(new Date(event?.date), "MMM d, yyyy h:mm a")}</p> */}
-                <p>
-                  Hosted by{" "}
-                  <strong>
-                    <Link to={`/users/profile/${event?.hostUid}`}>
-                      {event?.hostedBy}
-                    </Link>
-                  </strong>
-                </p>
-              </Item.Content>
-            </Item>
-          </Item.Group>
+    <>
+      {modalOpen && <UnauthModal setModalOpen={setModalOpen} />}
+      <Segment>
+        <Segment basic attached="top" style={{padding: "0"}}>
+          <Image
+            src={`/assets/categoryImages/${event?.category}.jpg`}
+            fluid
+            style={eventImageStyle}
+          />
+          <Segment basic style={eventImageTextStyle}>
+            <Item.Group>
+              <Item>
+                <Item.Content>
+                  <Header
+                    size="huge"
+                    content={event?.title}
+                    style={{color: "white"}}
+                  />
+                  {/* TODO to fix */}
+                  {/* <p>{format(new Date(event?.date), "MMM d, yyyy h:mm a")}</p> */}
+                  <p>
+                    Hosted by{" "}
+                    <strong>
+                      <Link to={`/users/profile/${event?.hostUid}`}>
+                        {event?.hostedBy}
+                      </Link>
+                    </strong>
+                  </p>
+                </Item.Content>
+              </Item>
+            </Item.Group>
+          </Segment>
+        </Segment>
+
+        <Segment attached="bottom" clearing>
+          {!isHost && (
+            <>
+              {isGoing ? (
+                <Button onClick={handleUserLeaveEvent} loading={loading}>
+                  Cancel My Place
+                </Button>
+              ) : (
+                <Button
+                  loading={loading}
+                  onClick={
+                    authenticated
+                      ? handleUserJoinEvent
+                      : () => setModalOpen(true)
+                  }
+                  color="teal"
+                >
+                  JOIN THIS EVENT
+                </Button>
+              )}
+            </>
+          )}
+
+          {isHost && (
+            <Button
+              as={Link}
+              to={`/events/manage/${event?.id}`}
+              color="orange"
+              floated="right"
+            >
+              Manage Event
+            </Button>
+          )}
         </Segment>
       </Segment>
-
-      <Segment attached="bottom" clearing>
-        {!isHost && (
-          <>
-            {isGoing ? (
-              <Button onClick={handleUserLeaveEvent} loading={loading}>
-                Cancel My Place
-              </Button>
-            ) : (
-              <Button
-                loading={loading}
-                onClick={handleUserJoinEvent}
-                color="teal"
-              >
-                JOIN THIS EVENT
-              </Button>
-            )}
-          </>
-        )}
-
-        {isHost && (
-          <Button
-            as={Link}
-            to={`/events/manage/${event?.id}`}
-            color="orange"
-            floated="right"
-          >
-            Manage Event
-          </Button>
-        )}
-      </Segment>
-    </Segment>
+    </>
   );
 }

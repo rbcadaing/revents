@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Segment, Comment, Header } from "semantic-ui-react";
+import React, {useEffect, useState} from "react";
+import {Segment, Comment, Header} from "semantic-ui-react";
 import EventDetailedChatForm from "./EventDetailedChatForm";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
   firebaseObjectToArray,
   getEventChatRef,
 } from "../../../app/firestore/firebaseService";
-import { listenToEventChat } from "../eventActions";
-import { Link } from "react-router-dom";
-import { formatDistance } from "date-fns";
-import { CLEAR_COMMENTS } from "../eventConstants";
-import { createDataTree } from "../../../app/common/util/util";
+import {listenToEventChat} from "../eventActions";
+import {Link} from "react-router-dom";
+import {formatDistance} from "date-fns";
+import {CLEAR_COMMENTS} from "../eventConstants";
+import {createDataTree} from "../../../app/common/util/util";
 
-export default function EventDetailedChat({ eventId }) {
+export default function EventDetailedChat({eventId}) {
   const dispatch = useDispatch();
-  const { comments } = useSelector((state) => state.event);
+  const {comments} = useSelector((state) => state.event);
+  const {authenticated} = useSelector((state) => state.auth);
   const [showReplyForm, setShowReplyForm] = useState({
     open: false,
     commentId: null,
   });
 
   function handleCloseReplyForm() {
-    setShowReplyForm({ open: false, commentId: null });
+    setShowReplyForm({open: false, commentId: null});
   }
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function EventDetailedChat({ eventId }) {
     });
     return () => {
       //clear redux state when component un-mounts
-      dispatch({ type: CLEAR_COMMENTS });
+      dispatch({type: CLEAR_COMMENTS});
       //turn off firebase listener
       getEventChatRef().off();
     };
@@ -46,108 +47,116 @@ export default function EventDetailedChat({ eventId }) {
         attached="top"
         inverted
         color="teal"
-        style={{ border: "none" }}
+        style={{border: "none"}}
       >
-        <Header>Chat about this event</Header>
+        <Header>
+          {authenticated
+            ? "Chat about this event"
+            : "Sign in to view and comment!"}
+        </Header>
       </Segment>
-
-      <Segment attached>
-        <EventDetailedChatForm
-          eventId={eventId}
-          parentId={0}
-          closeForm={setShowReplyForm}
-        />
-        <Comment.Group>
-          {createDataTree(comments).map((comment) => (
-            <Comment key={comment.id}>
-              <Comment.Avatar src={comment.photoURL || "/assets/user.png"} />
-              <Comment.Content>
-                <Comment.Author as={Link} to={`/users/profile/${comment.uid}`}>
-                  {comment.displayName}
-                </Comment.Author>
-                <Comment.Metadata>
-                  <div>{formatDistance(comment.date, new Date())}</div>
-                </Comment.Metadata>
-                <Comment.Text>
-                  {comment.text.split("\n").map((text, i) => (
-                    <span key={i}>
-                      {text}
-                      <br />
-                    </span>
-                  ))}
-                </Comment.Text>
-                <Comment.Actions>
-                  <Comment.Action
-                    onClick={() =>
-                      setShowReplyForm({ open: true, commentId: comment.id })
-                    }
+      {authenticated && (
+        <Segment attached>
+          <EventDetailedChatForm
+            eventId={eventId}
+            parentId={0}
+            closeForm={setShowReplyForm}
+          />
+          <Comment.Group>
+            {createDataTree(comments).map((comment) => (
+              <Comment key={comment.id}>
+                <Comment.Avatar src={comment.photoURL || "/assets/user.png"} />
+                <Comment.Content>
+                  <Comment.Author
+                    as={Link}
+                    to={`/users/profile/${comment.uid}`}
                   >
-                    Reply
-                  </Comment.Action>
-                  {showReplyForm.open &&
-                    showReplyForm.commentId === comment.id && (
-                      <EventDetailedChatForm
-                        eventId={eventId}
-                        parentId={comment.id}
-                        closeForm={handleCloseReplyForm}
-                      />
-                    )}
-                </Comment.Actions>
-              </Comment.Content>
-              {comment.childNodes.length > 0 && (
-                <Comment.Group>
-                  {comment.childNodes.reverse().map((child) => (
-                    <Comment key={child.id}>
-                      <Comment.Avatar
-                        src={child.photoURL || "/assets/user.png"}
-                      />
-                      <Comment.Content>
-                        <Comment.Author
-                          as={Link}
-                          to={`/users/profile/${child.uid}`}
-                        >
-                          {child.displayName}
-                        </Comment.Author>
-                        <Comment.Metadata>
-                          <div>{formatDistance(child.date, new Date())}</div>
-                        </Comment.Metadata>
-                        <Comment.Text>
-                          {child.text.split("\n").map((text, i) => (
-                            <span key={i}>
-                              {text}
-                              <br />
-                            </span>
-                          ))}
-                        </Comment.Text>
-                        <Comment.Actions>
-                          <Comment.Action
-                            onClick={() =>
-                              setShowReplyForm({
-                                open: true,
-                                commentId: child.id,
-                              })
-                            }
+                    {comment.displayName}
+                  </Comment.Author>
+                  <Comment.Metadata>
+                    <div>{formatDistance(comment.date, new Date())}</div>
+                  </Comment.Metadata>
+                  <Comment.Text>
+                    {comment.text.split("\n").map((text, i) => (
+                      <span key={i}>
+                        {text}
+                        <br />
+                      </span>
+                    ))}
+                  </Comment.Text>
+                  <Comment.Actions>
+                    <Comment.Action
+                      onClick={() =>
+                        setShowReplyForm({open: true, commentId: comment.id})
+                      }
+                    >
+                      Reply
+                    </Comment.Action>
+                    {showReplyForm.open &&
+                      showReplyForm.commentId === comment.id && (
+                        <EventDetailedChatForm
+                          eventId={eventId}
+                          parentId={comment.id}
+                          closeForm={handleCloseReplyForm}
+                        />
+                      )}
+                  </Comment.Actions>
+                </Comment.Content>
+                {comment.childNodes.length > 0 && (
+                  <Comment.Group>
+                    {comment.childNodes.reverse().map((child) => (
+                      <Comment key={child.id}>
+                        <Comment.Avatar
+                          src={child.photoURL || "/assets/user.png"}
+                        />
+                        <Comment.Content>
+                          <Comment.Author
+                            as={Link}
+                            to={`/users/profile/${child.uid}`}
                           >
-                            Reply
-                          </Comment.Action>
-                          {showReplyForm.open &&
-                            showReplyForm.commentId === child.id && (
-                              <EventDetailedChatForm
-                                eventId={eventId}
-                                parentId={child.parentId}
-                                closeForm={handleCloseReplyForm}
-                              />
-                            )}
-                        </Comment.Actions>
-                      </Comment.Content>
-                    </Comment>
-                  ))}
-                </Comment.Group>
-              )}
-            </Comment>
-          ))}
-        </Comment.Group>
-      </Segment>
+                            {child.displayName}
+                          </Comment.Author>
+                          <Comment.Metadata>
+                            <div>{formatDistance(child.date, new Date())}</div>
+                          </Comment.Metadata>
+                          <Comment.Text>
+                            {child.text.split("\n").map((text, i) => (
+                              <span key={i}>
+                                {text}
+                                <br />
+                              </span>
+                            ))}
+                          </Comment.Text>
+                          <Comment.Actions>
+                            <Comment.Action
+                              onClick={() =>
+                                setShowReplyForm({
+                                  open: true,
+                                  commentId: child.id,
+                                })
+                              }
+                            >
+                              Reply
+                            </Comment.Action>
+                            {showReplyForm.open &&
+                              showReplyForm.commentId === child.id && (
+                                <EventDetailedChatForm
+                                  eventId={eventId}
+                                  parentId={child.parentId}
+                                  closeForm={handleCloseReplyForm}
+                                />
+                              )}
+                          </Comment.Actions>
+                        </Comment.Content>
+                      </Comment>
+                    ))}
+                  </Comment.Group>
+                )}
+              </Comment>
+            ))}
+          </Comment.Group>
+        </Segment>
+      )}
     </>
   );
 }
