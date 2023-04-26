@@ -144,8 +144,9 @@ export async function setMainPhoto(photo) {
   const today = new Date();
   const eventDocQuery = db
     .collection("events")
-    .where("attendeeIds", "array-contains", user.uid);
-  // .where("date", ">=", today);
+    .where("attendeeIds", "array-contains", user.uid)
+    .where("date", ">=", today);
+  console.log("userId:" + user.uid);
 
   const userFollowingRef = db
     .collection("following")
@@ -159,7 +160,7 @@ export async function setMainPhoto(photo) {
 
   try {
     const eventsQuerySnap = await eventDocQuery.get();
-    for (let i = 0; i < eventsQuerySnap.length; i++) {
+    for (let i = 0; i < eventsQuerySnap.docs.length; i++) {
       let eventDoc = eventsQuerySnap.docs[i];
       if (eventDoc.data().hostUid === user.uid) {
         batch.update(eventsQuerySnap.docs[i].ref, {
@@ -175,7 +176,6 @@ export async function setMainPhoto(photo) {
         }),
       });
     }
-
     const userFollowingSnap = await userFollowingRef.get();
     userFollowingSnap.docs.forEach((docRef) => {
       let followingDocRef = db
